@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Shop</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>My Shop</h1>
+  <button onclick="goToCart()">Cart</button>
+</header>
+
+<section class="container">
+
+  <h2>Products</h2>
+
+  <!-- FILTER -->
+  <div class="filters">
+    <button onclick="filterProducts('all')">All</button>
+    <button onclick="filterProducts('jacket')">Jackets</button>
+    <button onclick="filterProducts('tshirt')">T-Shirts</button>
+    <button onclick="filterProducts('pants')">Pants</button>
+  </div>
+
+  <!-- PRODUCTS -->
+  <div class="products">
+    
+    <!-- JACKET -->
+    <div class="card" data-category="jacket">
+      <img src="images/shoes.jpg" alt="Jacket">
+      <h3>Jacket</h3>
+      <p class="price">₱1500</p>
+
+      <div class="card-buttons">
+        <button onclick="addToCart('Jacket',1500)">Add to Cart</button>
+        <button class="buy-btn" onclick="buyNow('Jacket',1500)">Buy Now</button>
+      </div>
+    </div>
+
+    <!-- TSHIRT -->
+    <div class="card" data-category="tshirt">
+      <img src="images/tshirt.jpg" alt="T-Shirt">
+      <h3>T-Shirt</h3>
+      <p class="price">₱500</p>
+
+      <div class="card-buttons">
+        <button onclick="addToCart('T-Shirt',500)">Add to Cart</button>
+        <button class="buy-btn" onclick="buyNow('T-Shirt',500)">Buy Now</button>
+      </div>
+    </div>
+
+    <!-- PANTS -->
+    <div class="card" data-category="pants">
+      <img src="images/cap.jpg" alt="Pants">
+      <h3>Pants</h3>
+      <p class="price">₱800</p>
+
+      <div class="card-buttons">
+        <button onclick="addToCart('Pants',800)">Add to Cart</button>
+        <button class="buy-btn" onclick="buyNow('Pants',800)">Buy Now</button>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
