@@ -7,7 +7,6 @@ function displayCart() {
   cartItemsDiv.innerHTML = "";
   let total = 0;
 
-  // EMPTY CART
   if (cart.length === 0) {
     cartItemsDiv.innerHTML = `<p class="empty">Your cart is empty</p>`;
     totalText.innerText = "";
@@ -17,7 +16,6 @@ function displayCart() {
   for (let i = 0; i < cart.length; i++) {
     let item = cart[i];
 
-    // ensure qty exists (for old data)
     if (!item.qty) {
       item.qty = 1;
     }
@@ -47,14 +45,12 @@ function displayCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-// INCREASE QTY
 function increaseQty(index) {
   cart[index].qty += 1;
   localStorage.setItem("cart", JSON.stringify(cart));
   displayCart();
 }
 
-// DECREASE QTY
 function decreaseQty(index) {
   if (cart[index].qty > 1) {
     cart[index].qty -= 1;
@@ -66,14 +62,12 @@ function decreaseQty(index) {
   displayCart();
 }
 
-// REMOVE ITEM
 function removeItem(index) {
   cart.splice(index, 1);
   localStorage.setItem("cart", JSON.stringify(cart));
   displayCart();
 }
 
-// CHECKOUT
 function checkout() {
   if (cart.length === 0) {
     alert("Cart is empty!");
@@ -82,7 +76,6 @@ function checkout() {
   window.location.href = "checkout.html";
 }
 
-// BACK
 function goBack() {
   window.location.href = "index.html";
 }

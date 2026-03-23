@@ -8,14 +8,39 @@ document.getElementById("checkout-form").addEventListener("submit", function(e) 
     return;
   }
 
-  let name = document.getElementById("name").value;
-  let address = document.getElementById("address").value;
-  let contact = document.getElementById("contact").value;
+  let name = document.getElementById("name").value.trim();
+  let address = document.getElementById("address").value.trim();
+  let contact = document.getElementById("contact").value.trim();
 
-  alert(`Order placed successfully!\n\nName: ${name}\nAddress: ${address}\nContact: ${contact}\nItems: ${cart.length}`);
+  if (!name || !address || !contact) {
+    alert("Please fill in all fields!");
+    return;
+  }
 
-  localStorage.removeItem("cart");
-  window.location.href = "index.html";
+  // POST to backend
+  fetch("http://localhost:3000/orders", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: name,
+      address: address,
+      contact: contact,
+      cart: cart
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert("Order placed successfully!");
+    console.log("Order saved:", data.order);
+    localStorage.removeItem("cart");
+    window.location.href = "index.html";
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Error placing order. Please try again.");
+  });
 });
 
 function goBack() {
