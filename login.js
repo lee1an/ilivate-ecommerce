@@ -30,6 +30,7 @@ document.getElementById("register-form").addEventListener("submit", function(e) 
   .then(data => {
     alert(data.message);
     document.getElementById("register-form").style.display = "none";
+    document.getElementById("login-form").style.display = "none";
     document.getElementById("verify-form").style.display = "block";
   })
   .catch(err => {

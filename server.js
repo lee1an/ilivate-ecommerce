@@ -134,6 +134,21 @@ app.post("/register", async (req, res) => {
   try {
     const userExists = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     if (userExists.rows.length > 0) {
+      const user = userExists.rows[0];
+      if (!user.is_verified) {
+        // If user exists but is not verified, generate a new code and log it
+        const newCode = Math.floor(100000 + Math.random() * 900000).toString();
+        await pool.query("UPDATE users SET verification_code = $1 WHERE email = $2", [newCode, email]);
+        
+        console.log(`-----------------------------------------`);
+        console.log(`NEW VERIFICATION CODE FOR UNVERIFIED USER ${email}: ${newCode}`);
+        console.log(`-----------------------------------------`);
+        
+        return res.status(200).json({ 
+          message: "A new verification code has been generated. Please check your email (or Render logs).",
+          unverified: true 
+        });
+      }
       return res.status(400).json({ message: "User with this email already exists" });
     }
 
@@ -144,6 +159,11 @@ app.post("/register", async (req, res) => {
       "INSERT INTO users (email, password, verification_code) VALUES ($1, $2, $3) RETURNING *",
       [email, hashedPassword, verificationCode]
     );
+
+    // LOG CODE TO RENDER DASHBOARD (For easy verification if email fails)
+    console.log(`-----------------------------------------`);
+    console.log(`VERIFICATION CODE FOR ${email}: ${verificationCode}`);
+    console.log(`-----------------------------------------`);
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
