@@ -3,19 +3,9 @@ require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
-const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcryptjs");
 const saltRounds = 10; // for bcrypt
-
-// NODEMAILER TRANSPORTER FOR GMAIL
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
 
 const app = express();
 app.use(cors());
@@ -197,20 +187,8 @@ app.post("/register", async (req, res) => {
         console.log(`VERIFICATION CODE FOR ${email}: ${newCode}`);
         console.log(`-----------------------------------------`);
 
-        const mailOptions = {
-          from: `"Ilivate Support" <${process.env.EMAIL_USER}>`,
-          to: email,
-          subject: 'Your New Ilivate Verification Code',
-          html: `<b>You requested a new code.</b><p>Your new verification code is: <strong>${newCode}</strong></p>`,
-        };
-
-        // Send resend email in background
-        transporter.sendMail(mailOptions)
-          .then(() => console.log(`Resend email success for ${email}`))
-          .catch(error => console.error(`Resend email error for ${email}:`, error));
-
         return res.status(200).json({
-          message: "A new verification code has been generated. Please check your email (or Render logs).",
+          message: "A new verification code has been generated. Please check your Render logs.",
           unverified: true
         });
       }
@@ -229,27 +207,13 @@ app.post("/register", async (req, res) => {
     console.log(`VERIFICATION CODE FOR ${email}: ${verificationCode}`);
     console.log(`-----------------------------------------`);
 
-    const mailOptions = {
-      from: `"Ilivate Support" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: 'Your Ilivate Verification Code',
-      html: `<b>Thank you for registering!</b><p>Your verification code is: <strong>${verificationCode}</strong></p>`,
-    };
-
-    // Send verification email in the background so we don't block the response
-    transporter.sendMail(mailOptions)
-      .then(() => console.log(`Email sent successfully to ${email}`))
-      .catch(error => console.error(`Nodemailer Error for ${email}:`, error));
-
     // Respond immediately with a success message
     res.json({ 
-      message: "Registration successful! Please check your email (or Render logs) for your verification code." 
+      message: "Registration successful! Please check your Render logs for your verification code." 
     });
   } catch (err) {
     console.error("Registration error:", err);
-    if (err.code === 'ENOTFOUND' || err.code === 'ECONNRESET') {
-      return res.status(500).json({ message: "Email service failed. Check your internet connection or Nodemailer config." });
-    } else if (err.code === '23505') { // PostgreSQL unique violation
+    if (err.code === '23505') { // PostgreSQL unique violation
       return res.status(400).json({ message: "A user with this email already exists." });
     } else if (err.routine === 'scanner_yyerror') { // PostgreSQL syntax error
         return res.status(500).json({ message: "Database query error. Check if the 'users' table exists." });
