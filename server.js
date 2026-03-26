@@ -86,6 +86,26 @@ app.get("/", (req, res) => {
   res.send("Server running");
 });
 
+// SECRET RESET ROUTE (Use this to clear users without SQL Shell)
+app.get("/reset-users", async (req, res) => {
+  try {
+    await pool.query("TRUNCATE TABLE users RESTART IDENTITY");
+    res.send("Users table cleared successfully! You can now register again.");
+  } catch (err) {
+    res.status(500).send("Error clearing users: " + err.message);
+  }
+});
+
+// DIAGNOSTIC ROUTE (Check current users)
+app.get("/check-users", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT email, is_verified FROM users");
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).send("Error fetching users: " + err.message);
+  }
+});
+
 // SAVE ORDER
 app.post("/orders", async (req, res) => {
   try {
