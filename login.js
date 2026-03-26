@@ -33,7 +33,8 @@ document.getElementById("register-form").addEventListener("submit", function(e) 
       localStorage.setItem("userEmail", email);
       window.location.href = "index.html";
     }
-  })document.getElementById("register-form").style.display = "none";
+    });
+    document.getElementById("register-form").style.display = "none";
     document.getElementById("login-form").style.display = "none";
     document.getElementById("verify-form").style.display = "block";
   })
