@@ -187,6 +187,10 @@ app.post("/register", async (req, res) => {
         const newCode = Math.floor(100000 + Math.random() * 900000).toString();
         await pool.query("UPDATE users SET verification_code = $1 WHERE email = $2", [newCode, email]);
 
+        console.log(`-----------------------------------------`);
+        console.log(`VERIFICATION CODE FOR ${email}: ${newCode}`);
+        console.log(`-----------------------------------------`);
+
         const msg = {
           to: email,
           from: '"Ilivate Support" <leeian.lacorte19@gmail.com>',
@@ -202,7 +206,6 @@ app.post("/register", async (req, res) => {
           });
         } catch (error) {
           console.error('SendGrid Error (resending code):', error.response ? error.response.body : error.message);
-          console.log(`FALLBACK: New verification code for ${email} is ${newCode}`);
           return res.status(500).json({ 
             message: `Email failed. FOR TESTING: Your code is ${newCode}`,
             unverified: true 
@@ -220,6 +223,10 @@ app.post("/register", async (req, res) => {
       [email, hashedPassword, verificationCode]
     );
 
+    console.log(`-----------------------------------------`);
+    console.log(`VERIFICATION CODE FOR ${email}: ${verificationCode}`);
+    console.log(`-----------------------------------------`);
+
     const msg = {
       to: email,
       from: '"Ilivate Support" <leeian.lacorte19@gmail.com>', // Use your verified sender
@@ -232,7 +239,6 @@ app.post("/register", async (req, res) => {
       res.json({ message: "Registration successful! Please check your email for your verification code." });
     } catch (error) {
       console.error('SendGrid Error:', error.response ? JSON.stringify(error.response.body) : error.message);
-      console.log(`FALLBACK: Verification code for ${email} is ${verificationCode}`);
       res.status(500).json({ 
         message: `Registration successful, but email failed. FOR TESTING: Your code is ${verificationCode}` 
       });
