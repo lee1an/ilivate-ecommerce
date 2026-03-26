@@ -210,9 +210,8 @@ app.post("/register", async (req, res) => {
           .catch(error => console.error(`Resend email error for ${email}:`, error));
 
         return res.status(200).json({
-          message: `A new code has been generated. FOR TESTING: Your code is ${newCode}`,
-          unverified: true,
-          newCode: newCode
+          message: "A new verification code has been generated. Please check your email (or Render logs).",
+          unverified: true
         });
       }
       return res.status(400).json({ message: "User with this email already exists" });
@@ -242,10 +241,9 @@ app.post("/register", async (req, res) => {
       .then(() => console.log(`Email sent successfully to ${email}`))
       .catch(error => console.error(`Nodemailer Error for ${email}:`, error));
 
-    // Respond immediately with the code so the user isn't stuck "Processing..."
+    // Respond immediately with a success message
     res.json({ 
-      message: `Registration successful! FOR TESTING: Your code is ${verificationCode} (also sent to your email).`,
-      verificationCode: verificationCode 
+      message: "Registration successful! Please check your email (or Render logs) for your verification code." 
     });
   } catch (err) {
     console.error("Registration error:", err);
