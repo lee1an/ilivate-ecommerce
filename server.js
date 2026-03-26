@@ -3,7 +3,7 @@ const cors = require("cors");
 const { Pool } = require("pg");
 const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const saltRounds = 10; // for bcrypt
 
 const app = express();
@@ -23,7 +23,13 @@ const pool = new Pool({
 
 // INITIALIZE DATABASE TABLES
 async function initDB() {
+  console.log("Checking database connection...");
   try {
+    // Try to connect once to verify connection
+    const client = await pool.connect();
+    console.log("Successfully connected to the database!");
+    client.release();
+
     // Create Users Table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
@@ -35,6 +41,7 @@ async function initDB() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
+    console.log("Users table verified.");
 
     // Create Orders Table
     await pool.query(`
@@ -50,6 +57,7 @@ async function initDB() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
+    console.log("Orders table verified.");
 
     // Create Reviews Table
     await pool.query(`
@@ -62,10 +70,12 @@ async function initDB() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
+    console.log("Reviews table verified.");
 
     console.log("Database tables initialized successfully!");
   } catch (err) {
-    console.error("Error initializing database:", err);
+    console.error("Error initializing database:", err.message);
+    console.error("Stack trace:", err.stack);
   }
 }
 
