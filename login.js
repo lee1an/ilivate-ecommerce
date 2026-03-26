@@ -2,9 +2,30 @@ const API_URL = window.location.hostname === '127.0.0.1' || window.location.host
   ? "http://localhost:3000" 
   : "https://ilivate-ecommerce.onrender.com";
 
+// HELPER: SWITCH TO VERIFICATION VIEW
+function showVerificationView() {
+  document.getElementById("login-form").parentElement.style.display = "none";
+  document.getElementById("register-form").parentElement.style.display = "none";
+  document.getElementById("verify-wrapper").style.display = "block";
+}
+
+// HELPER: MANAGE BUTTON LOADING STATE
+function setLoading(btn, isLoading, originalText) {
+  if (isLoading) {
+    btn.disabled = true;
+    btn.textContent = "Processing...";
+  } else {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+}
+
+// REGISTRATION
 document.getElementById("register-form").addEventListener("submit", function(e) {
   e.preventDefault();
 
+  const btn = e.target.querySelector('button');
+  const originalText = btn.textContent;
   let email = document.getElementById("register-email").value.trim();
   let password = document.getElementById("register-password").value.trim();
 
@@ -12,6 +33,8 @@ document.getElementById("register-form").addEventListener("submit", function(e) 
     alert("Please fill in all fields!");
     return;
   }
+
+  setLoading(btn, true);
 
   fetch(`${API_URL}/register`, {
     method: "POST",
@@ -22,26 +45,29 @@ document.getElementById("register-form").addEventListener("submit", function(e) 
   })
   .then(async res => {
     const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.message || `HTTP error! status: ${res.status}`);
+    // If registration was successful (even if email failed), we switch to verify
+    if (res.ok || (res.status === 500 && data.message.includes("Registration successful"))) {
+      alert(data.message);
+      showVerificationView();
+      return;
     }
-    return data;
-  })
-  .then(data => {
-    alert(data.message);
-    document.getElementById("login-form").parentElement.style.display = "none";
-    document.getElementById("register-form").parentElement.style.display = "none";
-    document.getElementById("verify-wrapper").style.display = "block";
+    throw new Error(data.message || `HTTP error! status: ${res.status}`);
   })
   .catch(err => {
-    console.error("Registration fetch error:", err);
+    console.error("Registration error:", err);
     alert(`Error: ${err.message}`);
+  })
+  .finally(() => {
+    setLoading(btn, false, originalText);
   });
 });
 
+// VERIFICATION
 document.getElementById("verify-form").addEventListener("submit", function(e) {
   e.preventDefault();
 
+  const btn = e.target.querySelector('button');
+  const originalText = btn.textContent;
   let email = document.getElementById("register-email").value.trim(); // Get email from original form
   let code = document.getElementById("verify-code").value.trim();
 
@@ -49,6 +75,8 @@ document.getElementById("verify-form").addEventListener("submit", function(e) {
     alert("Please enter the verification code!");
     return;
   }
+
+  setLoading(btn, true);
 
   fetch(`${API_URL}/verify`, {
     method: "POST",
@@ -69,14 +97,20 @@ document.getElementById("verify-form").addEventListener("submit", function(e) {
     window.location.reload(); // Reload to show login form
   })
   .catch(err => {
-    console.error("Verification fetch error:", err);
+    console.error("Verification error:", err);
     alert(`Error: ${err.message}`);
+  })
+  .finally(() => {
+    setLoading(btn, false, originalText);
   });
 });
 
+// LOGIN
 document.getElementById("login-form").addEventListener("submit", function(e) {
   e.preventDefault();
 
+  const btn = e.target.querySelector('button');
+  const originalText = btn.textContent;
   let email = document.getElementById("login-email").value.trim();
   let password = document.getElementById("login-password").value.trim();
 
@@ -84,6 +118,8 @@ document.getElementById("login-form").addEventListener("submit", function(e) {
     alert("Please fill in all fields!");
     return;
   }
+
+  setLoading(btn, true);
 
   fetch(`${API_URL}/login`, {
     method: "POST",
@@ -110,7 +146,10 @@ document.getElementById("login-form").addEventListener("submit", function(e) {
     }
   })
   .catch(err => {
-    console.error("Login fetch error:", err);
+    console.error("Login error:", err);
     alert(`Error: ${err.message}`);
+  })
+  .finally(() => {
+    setLoading(btn, false, originalText);
   });
 });
