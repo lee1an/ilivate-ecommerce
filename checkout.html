@@ -71,8 +71,16 @@
 
       <div id="order-summary" style="margin: 2rem 0; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 0.75rem; border: 1px solid var(--glass-border);">
         <h3 style="margin-top: 0; margin-bottom: 1rem; font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Order Summary</h3>
-        <div id="summary-items" style="margin-bottom: 1rem;">
+        <div id="summary-items" style="margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem;">
           <!-- Items will be inserted here by JS -->
+        </div>
+        <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem; color: var(--text-muted);">
+          <span>Subtotal:</span>
+          <span id="summary-subtotal">₱0.00</span>
+        </div>
+        <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.95rem; color: var(--text-muted);">
+          <span>Shipping Fee:</span>
+          <span id="summary-shipping">₱0.00</span>
         </div>
         <div class="summary-row total" style="display: flex; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--glass-border); font-weight: 700; font-size: 1.25rem; color: var(--accent);">
           <span>Total to Pay:</span>

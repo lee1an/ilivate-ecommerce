@@ -11,6 +11,8 @@ const referenceInput = document.getElementById("reference-number");
 // DISPLAY ORDER SUMMARY ON LOAD
 document.addEventListener("DOMContentLoaded", function() {
   const summaryItems = document.getElementById("summary-items");
+  const summarySubtotal = document.getElementById("summary-subtotal");
+  const summaryShipping = document.getElementById("summary-shipping");
   const summaryTotal = document.getElementById("summary-total");
   
   if (cart.length === 0) {
@@ -18,17 +20,24 @@ document.addEventListener("DOMContentLoaded", function() {
     return;
   }
 
-  let total = 0;
+  let subtotal = 0;
+  const shippingFee = cart.length > 0 ? 100 : 0;
+
   summaryItems.innerHTML = cart.map(item => {
-    total += item.price * item.qty;
+    const itemTotal = item.price * item.qty;
+    subtotal += itemTotal;
     return `
       <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem;">
         <span style="color: var(--text-main);">${item.name} x${item.qty}</span>
-        <span style="color: var(--text-muted);">₱${(item.price * item.qty).toLocaleString()}</span>
+        <span style="color: var(--text-muted);">₱${itemTotal.toLocaleString()}</span>
       </div>
     `;
   }).join('');
 
+  const total = subtotal + shippingFee;
+
+  summarySubtotal.textContent = `₱${subtotal.toLocaleString()}`;
+  summaryShipping.textContent = `₱${shippingFee.toLocaleString()}`;
   summaryTotal.textContent = `₱${total.toLocaleString()}`;
 });
 
