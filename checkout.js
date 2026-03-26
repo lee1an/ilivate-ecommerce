@@ -8,6 +8,30 @@ const paymentMethodSelect = document.getElementById("payment-method");
 const gcashQrContainer = document.getElementById("gcash-qr-container");
 const referenceInput = document.getElementById("reference-number");
 
+// DISPLAY ORDER SUMMARY ON LOAD
+document.addEventListener("DOMContentLoaded", function() {
+  const summaryItems = document.getElementById("summary-items");
+  const summaryTotal = document.getElementById("summary-total");
+  
+  if (cart.length === 0) {
+    summaryItems.innerHTML = "<p>Your cart is empty.</p>";
+    return;
+  }
+
+  let total = 0;
+  summaryItems.innerHTML = cart.map(item => {
+    total += item.price * item.qty;
+    return `
+      <div class="summary-row" style="margin-bottom: 0.5rem; font-size: 0.95rem;">
+        <span>${item.name} x${item.qty}</span>
+        <span>₱${(item.price * item.qty).toLocaleString()}</span>
+      </div>
+    `;
+  }).join('');
+
+  summaryTotal.textContent = `₱${total.toLocaleString()}`;
+});
+
 paymentMethodSelect.addEventListener("change", function() {
   if (this.value === "GCash") {
     gcashQrContainer.style.display = "block";

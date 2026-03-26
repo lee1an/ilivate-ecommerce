@@ -30,6 +30,17 @@
       <i class="fas fa-shipping-fast" style="color: var(--primary);"></i>
       Shipping & Payment
     </h2>
+
+    <div id="order-summary" class="cart-summary" style="max-width: none; margin: 0 0 2rem 0; background: rgba(0,0,0,0.1); border: 1px dashed var(--border-color);">
+      <h3 style="margin-top: 0; margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-muted);">Order Summary</h3>
+      <div id="summary-items">
+        <!-- Items will be inserted here by JS -->
+      </div>
+      <div class="summary-row total" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); font-weight: 700; font-size: 1.25rem;">
+        <span>Total to Pay:</span>
+        <span id="summary-total">₱0.00</span>
+      </div>
+    </div>
     
     <form id="checkout-form" style="max-width: none; margin: 0; padding: 0; border: none; background: transparent;">
       <div class="form-group">
