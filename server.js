@@ -204,19 +204,16 @@ app.post("/register", async (req, res) => {
           html: `<b>You requested a new code.</b><p>Your new verification code is: <strong>${newCode}</strong></p>`,
         };
 
-        try {
-          await transporter.sendMail(mailOptions);
-          return res.status(200).json({
-            message: "A new verification code has been sent to your email.",
-            unverified: true
-          });
-        } catch (error) {
-          console.error('Nodemailer Error (resending code):', error);
-          return res.status(500).json({ 
-            message: `Email failed. FOR TESTING: Your code is ${newCode}`,
-            unverified: true 
-          });
-        }
+        // Send resend email in background
+        transporter.sendMail(mailOptions)
+          .then(() => console.log(`Resend email success for ${email}`))
+          .catch(error => console.error(`Resend email error for ${email}:`, error));
+
+        return res.status(200).json({
+          message: `A new code has been generated. FOR TESTING: Your code is ${newCode}`,
+          unverified: true,
+          newCode: newCode
+        });
       }
       return res.status(400).json({ message: "User with this email already exists" });
     }
@@ -240,16 +237,16 @@ app.post("/register", async (req, res) => {
       html: `<b>Thank you for registering!</b><p>Your verification code is: <strong>${verificationCode}</strong></p>`,
     };
 
-    try {
-      await transporter.sendMail(mailOptions);
-      res.json({ message: "Registration successful! Please check your email for your verification code." });
-    } catch (error) {
-      console.error('Nodemailer Error:', error);
-      res.status(500).json({ 
-        message: `Registration successful, but email failed. FOR TESTING: Your code is ${verificationCode}` 
-      });
-    }
+    // Send verification email in the background so we don't block the response
+    transporter.sendMail(mailOptions)
+      .then(() => console.log(`Email sent successfully to ${email}`))
+      .catch(error => console.error(`Nodemailer Error for ${email}:`, error));
 
+    // Respond immediately with the code so the user isn't stuck "Processing..."
+    res.json({ 
+      message: `Registration successful! FOR TESTING: Your code is ${verificationCode} (also sent to your email).`,
+      verificationCode: verificationCode 
+    });
   } catch (err) {
     console.error("Registration error:", err);
     if (err.code === 'ENOTFOUND' || err.code === 'ECONNRESET') {
