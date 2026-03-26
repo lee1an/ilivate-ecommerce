@@ -22,9 +22,9 @@ document.addEventListener("DOMContentLoaded", function() {
   summaryItems.innerHTML = cart.map(item => {
     total += item.price * item.qty;
     return `
-      <div class="summary-row" style="margin-bottom: 0.5rem; font-size: 0.95rem;">
-        <span>${item.name} x${item.qty}</span>
-        <span>₱${(item.price * item.qty).toLocaleString()}</span>
+      <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem;">
+        <span style="color: var(--text-main);">${item.name} x${item.qty}</span>
+        <span style="color: var(--text-muted);">₱${(item.price * item.qty).toLocaleString()}</span>
       </div>
     `;
   }).join('');
