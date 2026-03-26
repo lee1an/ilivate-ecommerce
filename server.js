@@ -110,6 +110,28 @@ app.get("/check-users", async (req, res) => {
   }
 });
 
+// MANUAL VERIFICATION ROUTE (INSECURE - FOR TESTING ONLY)
+app.get("/manual-verify", async (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    return res.status(400).send("Please provide an email in the query string, e.g., /manual-verify?email=user@example.com");
+  }
+
+  try {
+    const result = await pool.query("UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = $1 RETURNING *", [email]);
+
+    if (result.rows.length > 0) {
+      res.send(`User ${email} has been manually verified. You can now log in.`);
+    } else {
+      res.status(404).send(`User ${email} not found.`);
+    }
+  } catch (err) {
+    console.error("Manual verification error:", err);
+    res.status(500).send("An error occurred during manual verification.");
+  }
+});
+
 // SAVE ORDER
 app.post("/orders", async (req, res) => {
   try {
