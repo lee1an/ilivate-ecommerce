@@ -29,9 +29,9 @@ document.getElementById("register-form").addEventListener("submit", function(e) 
   })
   .then(data => {
     alert(data.message);
-    document.getElementById("register-form").style.display = "none";
-    document.getElementById("login-form").style.display = "none";
-    document.getElementById("verify-form").style.display = "block";
+    document.getElementById("login-form").parentElement.style.display = "none";
+    document.getElementById("register-form").parentElement.style.display = "none";
+    document.getElementById("verify-wrapper").style.display = "block";
   })
   .catch(err => {
     console.error("Registration fetch error:", err);
