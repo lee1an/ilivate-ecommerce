@@ -180,8 +180,17 @@ app.post("/register", async (req, res) => {
       html: `<b>Thank you for registering!</b><p>Your verification code is: <strong>${verificationCode}</strong></p>`
     };
 
-    await transporter.sendMail(mailOptions);
-    res.json({ message: "Registration successful! Please check your email for your verification code." });
+    try {
+      await transporter.sendMail(mailOptions);
+      res.json({ message: "Registration successful! Please check your email for your verification code." });
+    } catch (mailErr) {
+      console.error("Email sending failed:", mailErr.message);
+      // Still return success but with a warning, since we logged the code in the dashboard
+      res.json({ 
+        message: "Registration successful! (Note: Email service is busy, please get your code from the Render Dashboard logs)",
+        emailError: true
+      });
+    }
 
   } catch (err) {
     console.error("Registration error:", err);
