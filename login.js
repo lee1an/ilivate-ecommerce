@@ -26,14 +26,9 @@ document.getElementById("register-form").addEventListener("submit", function(e) 
       throw new Error(data.message || `HTTP error! status: ${res.status}`);
     }
     return data;
+  })
   .then(data => {
     alert(data.message);
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userEmail", email);
-      window.location.href = "index.html";
-    }
-    });
     document.getElementById("register-form").style.display = "none";
     document.getElementById("login-form").style.display = "none";
     document.getElementById("verify-form").style.display = "block";
@@ -71,7 +66,13 @@ document.getElementById("verify-form").addEventListener("submit", function(e) {
   })
   .then(data => {
     alert(data.message);
-    window.location.reload(); // Reload to show login form
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userEmail", email);
+      window.location.href = "index.html";
+    } else {
+      window.location.reload();
+    }
   })
   .catch(err => {
     console.error("Verification fetch error:", err);
