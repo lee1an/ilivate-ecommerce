@@ -20,24 +20,29 @@ function displayCart() {
     subtotal += itemTotal;
 
     cartItemsDiv.innerHTML += `
-      <div class="card">
-        <div class="card-img-wrapper">
+      <div class="card" style="padding: 0;">
+        <div class="card-img-wrapper" style="border-radius: 1.25rem 1.25rem 0 0;">
           <img src="${item.image || 'images/placeholder.png'}" alt="${item.name}">
         </div>
-        <div class="card-content">
-          <h3>${item.name}</h3>
-          <p class="price">₱${item.price.toLocaleString()}</p>
+        <div class="card-content" style="padding: 1.5rem;">
+          <h3 style="margin-bottom: 1rem;">${item.name}</h3>
+          <p class="price" style="color: var(--accent); font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">₱${item.price.toLocaleString()}</p>
 
-          <div class="qty-controls" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-            <button class="btn btn-outline" style="width: 32px; height: 32px; padding: 0;" onclick="decreaseQty(${i})">-</button>
-            <span style="font-weight: 600; min-width: 20px; text-align: center;">${item.qty}</span>
-            <button class="btn btn-outline" style="width: 32px; height: 32px; padding: 0;" onclick="increaseQty(${i})">+</button>
+          <div class="qty-controls" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+            <button class="btn btn-outline" style="width: 36px; height: 36px; padding: 0; min-width: auto; border-radius: 0.5rem; background: rgba(255,255,255,0.05);" onclick="decreaseQty(${i})">-</button>
+            <span style="font-weight: 700; min-width: 24px; text-align: center; font-size: 1.1rem;">${item.qty}</span>
+            <button class="btn btn-outline" style="width: 36px; height: 36px; padding: 0; min-width: auto; border-radius: 0.5rem; background: rgba(255,255,255,0.05);" onclick="increaseQty(${i})">+</button>
           </div>
 
-          <p style="font-weight: 500; margin-top: 0.5rem;">Subtotal: <span style="color: var(--accent);">₱${itemTotal.toLocaleString()}</span></p>
-          <button class="btn btn-ghost" style="color: var(--danger); margin-top: 1rem; padding-left: 0;" onclick="removeItem(${i})">
-            <i class="fas fa-trash-alt"></i> Remove
-          </button>
+          <p style="font-weight: 600; font-size: 1rem; color: var(--text-main); margin-bottom: 1.5rem;">
+            Subtotal: <span style="color: var(--accent);">₱${itemTotal.toLocaleString()}</span>
+          </p>
+          
+          <div style="text-align: center; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
+            <button class="btn btn-ghost" style="color: var(--danger); font-weight: 600; font-size: 0.95rem;" onclick="removeItem(${i})">
+              <i class="fas fa-trash-alt"></i> Remove
+            </button>
+          </div>
         </div>
       </div>
     `;

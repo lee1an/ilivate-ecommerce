@@ -31,33 +31,33 @@
     <!-- Cart items will be injected here -->
   </div>
 
-  <div class="cart-summary">
-    <h2>Order Summary</h2>
+  <div class="cart-summary" style="max-width: 400px; margin: 2rem auto; background: var(--bg-card); border: 1px solid var(--glass-border); padding: 2rem; border-radius: 1.25rem;">
+    <h2 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.5rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem;">Order Summary</h2>
     
-    <div class="summary-row">
-      <span class="text-muted">Subtotal</span>
-      <span id="subtotal">₱0</span>
+    <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 1rem;">
+      <span style="color: var(--text-muted);">Subtotal</span>
+      <span id="subtotal" style="font-weight: 600;">₱0</span>
     </div>
     
-    <div class="summary-row">
-      <span class="text-muted">Shipping Fee</span>
-      <span id="shipping">₱100</span>
+    <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: 1rem;">
+      <span style="color: var(--text-muted);">Shipping Fee</span>
+      <span id="shipping" style="font-weight: 600;">₱100</span>
     </div>
     
-    <div class="summary-row total">
-      <span>Total</span>
-      <span id="total">₱0</span>
+    <div class="summary-row total" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--glass-border); padding-top: 1.5rem; margin-top: 1.5rem; margin-bottom: 2rem;">
+      <span style="font-size: 1.25rem; font-weight: 700;">Total</span>
+      <span id="total" style="font-size: 1.5rem; font-weight: 800; color: var(--accent);">₱0</span>
     </div>
 
-    <button class="btn btn-primary checkout-btn" onclick="checkout()" style="width: 100%; padding: 1rem; margin-top: 1rem;">
+    <button class="btn btn-primary checkout-btn" onclick="checkout()" style="width: 100%; padding: 1rem; border-radius: 0.75rem; font-size: 1.1rem; text-transform: none; letter-spacing: normal;">
       <i class="fas fa-lock"></i> Secure Checkout
     </button>
     
-    <button class="btn btn-ghost" onclick="clearCart()" style="width: 100%; margin-top: 0.5rem; color: var(--danger);">
-      <i class="fas fa-trash-sweep"></i> Clear Cart
-    </button>
+    <div style="text-align: center; margin-top: 1rem;">
+      <a href="#" onclick="clearCart()" style="color: var(--danger); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Clear Cart</a>
+    </div>
 
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem; text-align: center;">
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2rem; text-align: center; opacity: 0.7;">
       <i class="fas fa-shield-alt"></i> Secure payment processing
     </p>
   </div>
