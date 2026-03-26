@@ -26,10 +26,14 @@ document.getElementById("register-form").addEventListener("submit", function(e) 
       throw new Error(data.message || `HTTP error! status: ${res.status}`);
     }
     return data;
-  })
   .then(data => {
     alert(data.message);
-    document.getElementById("register-form").style.display = "none";
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userEmail", email);
+      window.location.href = "index.html";
+    }
+  })document.getElementById("register-form").style.display = "none";
     document.getElementById("login-form").style.display = "none";
     document.getElementById("verify-form").style.display = "block";
   })
