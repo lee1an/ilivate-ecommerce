@@ -6,6 +6,9 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcryptjs");
 const saltRounds = 10; // for bcrypt
 
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -180,36 +183,19 @@ app.post("/register", async (req, res) => {
       [email, hashedPassword, verificationCode]
     );
 
-    // LOG CODE TO RENDER DASHBOARD (For easy verification if email fails)
-    console.log(`-----------------------------------------`);
-    console.log(`VERIFICATION CODE FOR ${email}: ${verificationCode}`);
-    console.log(`-----------------------------------------`);
-
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "leeian.lacorte19@gmail.com", // Your Gmail address
-        pass: "kpfumbbhkuhdmcey" // IMPORTANT: Replace with your App Password
-      }
-    });
-
-    const mailOptions = {
-      from: '"Ilivate Support" <leeian.lacorte19@gmail.com>',
+    const msg = {
       to: email,
-      subject: "Your Verification Code for Ilivate",
-      html: `<b>Thank you for registering!</b><p>Your verification code is: <strong>${verificationCode}</strong></p>`
+      from: '"Ilivate Support" <leeian.lacorte19@gmail.com>', // Use your verified sender
+      subject: 'Your Ilivate Verification Code',
+      html: `<b>Thank you for registering!</b><p>Your verification code is: <strong>${verificationCode}</strong></p>`,
     };
 
     try {
-      await transporter.sendMail(mailOptions);
+      await sgMail.send(msg);
       res.json({ message: "Registration successful! Please check your email for your verification code." });
-    } catch (mailErr) {
-      console.error("Email sending failed:", mailErr.message);
-      // Still return success but with a warning, since we logged the code in the dashboard
-      res.json({ 
-        message: "Registration successful! (Note: Email service is busy, please get your code from the Render Dashboard logs)",
-        emailError: true
-      });
+    } catch (error) {
+      console.error('SendGrid Error:', error.response.body);
+      res.status(500).json({ message: "Registration successful, but failed to send verification email. Please contact support." });
     }
 
   } catch (err) {
