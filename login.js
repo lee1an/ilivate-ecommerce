@@ -66,13 +66,7 @@ document.getElementById("verify-form").addEventListener("submit", function(e) {
   })
   .then(data => {
     alert(data.message);
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userEmail", email);
-      window.location.href = "index.html";
-    } else {
-      window.location.reload();
-    }
+    window.location.reload(); // Reload to show login form
   })
   .catch(err => {
     console.error("Verification fetch error:", err);

@@ -1,4 +1,4 @@
-// Trigger new deployment
+require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
@@ -256,10 +256,7 @@ app.post("/verify", async (req, res) => {
 
     if (result.rows.length > 0) {
       await pool.query("UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = $1", [email]);
-      res.json({ 
-        message: "Account verified successfully! You are now logged in.", 
-        token: "dummy-token" // This is the same token used in the login route
-      });
+      res.json({ message: "Account verified successfully! You can now log in." });
     } else {
       res.status(400).json({ message: "Invalid verification code" });
     }
