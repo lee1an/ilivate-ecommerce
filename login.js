@@ -29,8 +29,11 @@ document.getElementById("register-form").addEventListener("submit", function(e) 
   })
   .then(data => {
     alert(data.message);
+    console.log("Hiding login form wrapper:", document.getElementById("login-form").parentElement);
     document.getElementById("login-form").parentElement.style.display = "none";
+    console.log("Hiding register form wrapper:", document.getElementById("register-form").parentElement);
     document.getElementById("register-form").parentElement.style.display = "none";
+    console.log("Showing verify wrapper:", document.getElementById("verify-wrapper"));
     document.getElementById("verify-wrapper").style.display = "block";
   })
   .catch(err => {
