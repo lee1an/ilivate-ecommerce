@@ -203,7 +203,7 @@ app.post("/register", async (req, res) => {
       await sgMail.send(msg);
       res.json({ message: "Registration successful! Please check your email for your verification code." });
     } catch (error) {
-      console.error('SendGrid Error:', error.response.body);
+      console.error('SendGrid Error:', error.response ? JSON.stringify(error.response.body) : error.message);
       res.status(500).json({ message: "Registration successful, but failed to send verification email. Please contact support." });
     }
 
