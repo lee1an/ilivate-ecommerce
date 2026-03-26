@@ -2,7 +2,7 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' 
   ? "http://localhost:3000" 
-  : "https://your-backend-url.onrender.com";
+  : "https://ilivate-ecommerce.onrender.com";
 
 const paymentMethodSelect = document.getElementById("payment-method");
 const gcashQrContainer = document.getElementById("gcash-qr-container");

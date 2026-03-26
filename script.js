@@ -1,6 +1,6 @@
 const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' 
   ? "http://localhost:3000" 
-  : "https://your-backend-url.onrender.com"; // You will replace this after hosting
+  : "https://ilivate-ecommerce.onrender.com"; // You will replace this after hosting
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 

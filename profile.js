@@ -1,6 +1,6 @@
 const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' 
   ? "http://localhost:3000" 
-  : "https://your-backend-url.onrender.com";
+  : "https://ilivate-ecommerce.onrender.com";
 
 document.addEventListener("DOMContentLoaded", function() {
   const token = localStorage.getItem("token");
