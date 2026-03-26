@@ -159,18 +159,27 @@ app.post("/register", async (req, res) => {
     if (userExists.rows.length > 0) {
       const user = userExists.rows[0];
       if (!user.is_verified) {
-        // If user exists but is not verified, generate a new code and log it
+        // If user exists but is not verified, generate and email a new code
         const newCode = Math.floor(100000 + Math.random() * 900000).toString();
         await pool.query("UPDATE users SET verification_code = $1 WHERE email = $2", [newCode, email]);
-        
-        console.log(`-----------------------------------------`);
-        console.log(`NEW VERIFICATION CODE FOR UNVERIFIED USER ${email}: ${newCode}`);
-        console.log(`-----------------------------------------`);
-        
-        return res.status(200).json({ 
-          message: "A new verification code has been generated. Please check your email (or Render logs).",
-          unverified: true 
-        });
+
+        const msg = {
+          to: email,
+          from: '"Ilivate Support" <leeian.lacorte19@gmail.com>',
+          subject: 'Your New Ilivate Verification Code',
+          html: `<b>You requested a new code.</b><p>Your new verification code is: <strong>${newCode}</strong></p>`,
+        };
+
+        try {
+          await sgMail.send(msg);
+          return res.status(200).json({
+            message: "A new verification code has been sent to your email.",
+            unverified: true
+          });
+        } catch (error) {
+          console.error('SendGrid Error (resending code):', error.response ? error.response.body : error.message);
+          return res.status(500).json({ message: "Failed to resend verification email. Please contact support." });
+        }
       }
       return res.status(400).json({ message: "User with this email already exists" });
     }
