@@ -8,8 +8,14 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcryptjs");
 const saltRounds = 10; // for bcrypt
 
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// NODEMAILER TRANSPORTER FOR GMAIL
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
 
 const app = express();
 app.use(cors());
@@ -191,21 +197,21 @@ app.post("/register", async (req, res) => {
         console.log(`VERIFICATION CODE FOR ${email}: ${newCode}`);
         console.log(`-----------------------------------------`);
 
-        const msg = {
+        const mailOptions = {
+          from: `"Ilivate Support" <${process.env.EMAIL_USER}>`,
           to: email,
-          from: '"Ilivate Support" <leeian.lacorte19@gmail.com>',
           subject: 'Your New Ilivate Verification Code',
           html: `<b>You requested a new code.</b><p>Your new verification code is: <strong>${newCode}</strong></p>`,
         };
 
         try {
-          await sgMail.send(msg);
+          await transporter.sendMail(mailOptions);
           return res.status(200).json({
             message: "A new verification code has been sent to your email.",
             unverified: true
           });
         } catch (error) {
-          console.error('SendGrid Error (resending code):', error.response ? error.response.body : error.message);
+          console.error('Nodemailer Error (resending code):', error);
           return res.status(500).json({ 
             message: `Email failed. FOR TESTING: Your code is ${newCode}`,
             unverified: true 
@@ -227,18 +233,18 @@ app.post("/register", async (req, res) => {
     console.log(`VERIFICATION CODE FOR ${email}: ${verificationCode}`);
     console.log(`-----------------------------------------`);
 
-    const msg = {
+    const mailOptions = {
+      from: `"Ilivate Support" <${process.env.EMAIL_USER}>`,
       to: email,
-      from: '"Ilivate Support" <leeian.lacorte19@gmail.com>', // Use your verified sender
       subject: 'Your Ilivate Verification Code',
       html: `<b>Thank you for registering!</b><p>Your verification code is: <strong>${verificationCode}</strong></p>`,
     };
 
     try {
-      await sgMail.send(msg);
+      await transporter.sendMail(mailOptions);
       res.json({ message: "Registration successful! Please check your email for your verification code." });
     } catch (error) {
-      console.error('SendGrid Error:', error.response ? JSON.stringify(error.response.body) : error.message);
+      console.error('Nodemailer Error:', error);
       res.status(500).json({ 
         message: `Registration successful, but email failed. FOR TESTING: Your code is ${verificationCode}` 
       });
