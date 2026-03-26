@@ -2,11 +2,27 @@ const API_URL = window.location.hostname === '127.0.0.1' || window.location.host
   ? "http://localhost:3000" 
   : "https://ilivate-ecommerce.onrender.com";
 
+console.log("Using API_URL:", API_URL);
+
 // HELPER: SWITCH TO VERIFICATION VIEW
 function showVerificationView() {
-  document.getElementById("login-form").parentElement.style.display = "none";
-  document.getElementById("register-form").parentElement.style.display = "none";
-  document.getElementById("verify-wrapper").style.display = "block";
+  console.log("Attempting to show verification view...");
+  const loginForm = document.getElementById("login-form");
+  const registerForm = document.getElementById("register-form");
+  const verifyWrapper = document.getElementById("verify-wrapper");
+
+  if (loginForm && loginForm.parentElement) {
+    loginForm.parentElement.style.display = "none";
+  }
+  if (registerForm && registerForm.parentElement) {
+    registerForm.parentElement.style.display = "none";
+  }
+  if (verifyWrapper) {
+    verifyWrapper.style.display = "block";
+    console.log("Verification view displayed.");
+  } else {
+    console.error("verify-wrapper not found in DOM!");
+  }
 }
 
 // HELPER: MANAGE BUTTON LOADING STATE
@@ -35,6 +51,7 @@ document.getElementById("register-form").addEventListener("submit", function(e) 
   }
 
   setLoading(btn, true);
+  console.log(`Registering user: ${email}...`);
 
   fetch(`${API_URL}/register`, {
     method: "POST",
@@ -44,18 +61,24 @@ document.getElementById("register-form").addEventListener("submit", function(e) 
     body: JSON.stringify({ email: email, password: password })
   })
   .then(async res => {
+    console.log(`Response received. Status: ${res.status}`);
     const data = await res.json();
+    console.log("Response data:", data);
+
     // If registration was successful (even if email failed), we switch to verify
-    if (res.ok || (res.status === 500 && data.message.includes("Registration successful"))) {
+    const isSuccess = res.ok || (res.status === 500 && data.message && data.message.includes("Registration successful"));
+    
+    if (isSuccess) {
+      console.log("Registration successful (or partial success with code fallback).");
       alert(data.message);
       showVerificationView();
-      return;
+    } else {
+      throw new Error(data.message || `HTTP error! status: ${res.status}`);
     }
-    throw new Error(data.message || `HTTP error! status: ${res.status}`);
   })
   .catch(err => {
     console.error("Registration error:", err);
-    alert(`Error: ${err.message}`);
+    alert(`Registration error: ${err.message}`);
   })
   .finally(() => {
     setLoading(btn, false, originalText);
@@ -68,7 +91,7 @@ document.getElementById("verify-form").addEventListener("submit", function(e) {
 
   const btn = e.target.querySelector('button');
   const originalText = btn.textContent;
-  let email = document.getElementById("register-email").value.trim(); // Get email from original form
+  let email = document.getElementById("register-email").value.trim(); 
   let code = document.getElementById("verify-code").value.trim();
 
   if (!code) {
@@ -77,6 +100,7 @@ document.getElementById("verify-form").addEventListener("submit", function(e) {
   }
 
   setLoading(btn, true);
+  console.log(`Verifying email: ${email} with code: ${code}...`);
 
   fetch(`${API_URL}/verify`, {
     method: "POST",
@@ -86,7 +110,10 @@ document.getElementById("verify-form").addEventListener("submit", function(e) {
     body: JSON.stringify({ email: email, code: code })
   })
   .then(async res => {
+    console.log(`Verification response received. Status: ${res.status}`);
     const data = await res.json();
+    console.log("Verification data:", data);
+
     if (!res.ok) {
       throw new Error(data.message || `HTTP error! status: ${res.status}`);
     }
@@ -94,11 +121,11 @@ document.getElementById("verify-form").addEventListener("submit", function(e) {
   })
   .then(data => {
     alert(data.message);
-    window.location.reload(); // Reload to show login form
+    window.location.reload(); 
   })
   .catch(err => {
     console.error("Verification error:", err);
-    alert(`Error: ${err.message}`);
+    alert(`Verification error: ${err.message}`);
   })
   .finally(() => {
     setLoading(btn, false, originalText);
@@ -120,6 +147,7 @@ document.getElementById("login-form").addEventListener("submit", function(e) {
   }
 
   setLoading(btn, true);
+  console.log(`Logging in user: ${email}...`);
 
   fetch(`${API_URL}/login`, {
     method: "POST",
@@ -129,7 +157,10 @@ document.getElementById("login-form").addEventListener("submit", function(e) {
     body: JSON.stringify({ email: email, password: password })
   })
   .then(async res => {
+    console.log(`Login response received. Status: ${res.status}`);
     const data = await res.json();
+    console.log("Login data:", data);
+
     if (!res.ok) {
       throw new Error(data.message || `HTTP error! status: ${res.status}`);
     }
@@ -138,7 +169,7 @@ document.getElementById("login-form").addEventListener("submit", function(e) {
   .then(data => {
     if (data.token) {
       localStorage.setItem("token", data.token);
-      localStorage.setItem("userEmail", email); // Store user email
+      localStorage.setItem("userEmail", email); 
       alert("Login successful!");
       window.location.href = "index.html";
     } else {
@@ -147,7 +178,7 @@ document.getElementById("login-form").addEventListener("submit", function(e) {
   })
   .catch(err => {
     console.error("Login error:", err);
-    alert(`Error: ${err.message}`);
+    alert(`Login error: ${err.message}`);
   })
   .finally(() => {
     setLoading(btn, false, originalText);
