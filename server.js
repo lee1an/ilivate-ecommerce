@@ -202,6 +202,7 @@ app.post("/register", async (req, res) => {
           });
         } catch (error) {
           console.error('SendGrid Error (resending code):', error.response ? error.response.body : error.message);
+          console.log(`FALLBACK: New verification code for ${email} is ${newCode}`);
           return res.status(500).json({ message: "Failed to resend verification email. Please contact support." });
         }
       }
@@ -228,6 +229,7 @@ app.post("/register", async (req, res) => {
       res.json({ message: "Registration successful! Please check your email for your verification code." });
     } catch (error) {
       console.error('SendGrid Error:', error.response ? JSON.stringify(error.response.body) : error.message);
+      console.log(`FALLBACK: Verification code for ${email} is ${verificationCode}`);
       res.status(500).json({ message: "Registration successful, but failed to send verification email. Please contact support." });
     }
 
